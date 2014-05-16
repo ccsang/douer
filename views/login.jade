@@ -1,0 +1,21 @@
+doctype html
+html 
+  head
+    meta(http-equiv="Content-type", content="text/html;charset=utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="author", content="Xixiaohai")    
+    title login
+    link(href="vendor/bootstrap/css/bootstrap.min.css", rel="stylesheet")
+    link(href="stylesheets/style.css", rel="stylesheet")
+  body
+    .container
+        form.form-signin(role="form")
+            h2.form-signin-heading 登陆
+            input.form-control(type="email", placeholder="邮箱", required="", autofocus="")
+            input.form-control(type="password", placeholder="密码", required="")
+            label.checkbox
+                input(type="checkbox", value="remember-me")
+                记住我 
+            button.btn.btn-lg.btn-primary.btn-block(type="submit") 登陆   
+    script(src="vendor/jquery/jquery-2.1.1.min.js", type="text/javascript")
+    script(src="vendor/bootstrap/js/bootstrap.min.js", type="text/javascript")
