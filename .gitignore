@@ -1,0 +1,9 @@
+#logs
+logs
+*.log
+
+#Grunt omter,edoate storage
+.grunt
+
+#Dependecy directory
+node_modules
