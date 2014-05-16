@@ -20,6 +20,8 @@ module.exports = function (grunt) {
                 white: true,
                 node: true,
                 browser: true,
+                jquery: true,
+                devel: true
             },
             files: ['routes/*.js', './*.js', 'public/javascripts/*.js', 'model/*.js'],
         },
@@ -35,5 +37,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint')
     grunt.loadNpmTasks('grunt-contrib-watch')
 
-    // grunt.registerTask('default', ['stylus'])
+    grunt.registerTask('default', ['stylus'])
 }

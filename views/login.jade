@@ -9,10 +9,10 @@ html
     link(href="stylesheets/style.css", rel="stylesheet")
   body
     .container
-        form.form-signin(role="form")
+        form.form-signin(role="form",action="/signin",method="post")
             h2.form-signin-heading 登陆
-            input.form-control(type="email", placeholder="邮箱", required="", autofocus="")
-            input.form-control(type="password", placeholder="密码", required="")
+            input.form-control(name="email",type="email", placeholder="邮箱", required="", autofocus="")
+            input.form-control(name="password",type="password", placeholder="密码", required="")
             label.checkbox
                 input(type="checkbox", value="remember-me")
                 记住我 

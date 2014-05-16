@@ -2,7 +2,7 @@ create table if not exists user_info (
     id int primary key not null auto_increment,
     email varchar(128) not null,
     password varchar(128) not null,
-    nickname varchar(128) not null,
+    nick_name varchar(128) not null,
     sex int not null default 0,
     birthday date,
     city varchar(128),
