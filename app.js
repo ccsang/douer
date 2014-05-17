@@ -4,6 +4,7 @@ var favicon = require('static-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var connect = require('connect')
 
 var log4js = require('./util/log');
 var logger = log4js.logger('app')
@@ -23,6 +24,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(connect.session({secret: 'douer'}))
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -86,5 +88,4 @@ app.use(function (err, req, res, next) {
 app.listen(app.get('port'));
 module.exports = app;
 
-// this.logger('normal').info("douer service start...")
 logger.info('douer service start...')

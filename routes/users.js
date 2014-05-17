@@ -3,41 +3,41 @@ var router = express.Router()
 var model_user = require('../model/user')
 var logger = require('../util/log').logger('routes_users')
 var crypto = require('../util/encryption')
+var filter = require('../util/filter')
 
 /* GET users listing. */
 // router.get('/', function (req, res) {
 //     res.send('respond with a resource')
 // })
 
-
-router.get('/register', function (req, res) {
+var to_register = function (req, res) {
     res.render('sign_up')
-})
+}
 
-router.get('/signup', function (req, res) {
+var sign_up = function (req, res) {
     var email = req.param('email')
     var password = req.param('password')
-    var nick_name = req.param('nick_name')
+    var nickname = req.param('nickname')
 
-    logger.info(">>>>>>>>>>>>>>>>" + email + " " + password + " " + nick_name)
-    if (email === undefined || password === undefined || nick_name === undefined) {
+    logger.info(">>>>>>>>>>>>>>>>" + email + " " + password + " " + nickname)
+    if (email === undefined || password === undefined || nickname === undefined) {
         return res.render("sign_up")
     }
 
     password = crypto.encrypt(password)
 
-    var args = {'email': email, 'password': password, 'nick_name': nick_name}
+    var args = {'email': email, 'password': password, 'nickname': nickname}
 
     model_user.insert(args, function (rows) {
         logger.info("insert success!")
         return res.render("login")
-    })
+    })    
+}
 
-})
-
-router.post('/signin', function (req, res) {
+var sign_in = function (req, res) {
     var email = req.param('email')
     var password = req.param('password')
+    var is_remember = req.param('is_remember')
     // var email = req.body.email
     // var password = req.body.password
 
@@ -53,8 +53,44 @@ router.post('/signin', function (req, res) {
         if (rows[0] === undefined) {
             return res.render("login", {msg: '用户名/密码错误'})
         }
-        return res.render('index', {user: rows[0]})
+        
+        req.session.user = rows[0]
+        req.session.user_id = rows[0].id
+        
+        if (is_remember) {
+            var cookie_opt = { domain: 'douer.com', path: '/', maxAge: 2592000000}
+            res.cookie('email', email, cookie_opt)
+            res.cookie('password', password, cookie_opt)
+        }
+        return res.render('index')
+    })    
+}
+
+var log_out = function (req, res) {
+
+    req.session.destroy(function (err) {
+        if (err) {
+            logger.error('cannot access session here.')
+        }
+        res.clearCookie('email')
+        res.clearCookie('password')
+        return res.redirect('login')
     })
-})
+
+}
+
+var to_login = function (req, res) {
+    res.render('login')
+}
+
+router.get('/register', to_register)
+
+router.get('/signup', sign_up)
+
+router.post('/signin', sign_in)
+
+router.get('/logout', log_out)
+
+router.get('/login', to_login)
 
 module.exports = router

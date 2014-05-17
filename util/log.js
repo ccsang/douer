@@ -3,22 +3,22 @@ var log4js = require('log4js')
 log4js.configure({
     appenders: [
         {type: 'console'},
-        {type                  : 'datefile',
+        {type                  : 'dateFile',
          filename              : 'logs/douer.log',
-         pattern               : '_yyyy-MM-dd',
+         pattern               : '-yyyy-MM-dd',
          alwaysIncludedPattern : false,
-         category              : 'datefilelog'
+         category              : 'dateFileLog'
         }
     ],
     replaceConsole: true,
     levels: {
-    	datefilelog : 'DEBUG'
+    	dateFileLog : 'INFO'
     }
 })
 
 exports.logger = function (name) {
     var logger = log4js.getLogger(name)
-    logger.setLevel('DEBUG')
+    logger.setLevel('INFO')
     return logger
 }
 

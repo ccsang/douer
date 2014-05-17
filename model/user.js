@@ -3,10 +3,11 @@ var mysql = require('mysql')
 var logger = require('../util/log').logger('model_user')
 
 exports.insert = function (args, cb) {
-    var sql = 'insert into user_info(email,password,nick_name) values(?,?,?);'
-    var inserts = [args.email, args.password, args.nick_name]
+    var sql = 'insert into user_info(email,password,nickname) values(?,?,?);'
+    var inserts = [args.email, args.password, args.nickname]
     sql = mysql.format(sql, inserts)
-    logger.debug("sql:"+sql)
+    logger.debug("sql:" + sql)
+    
     db.get_connection(function (conn) {
         conn.query(sql, function (err, rows) {
             if (err) {
@@ -23,7 +24,8 @@ exports.login = function (args, cb) {
     var sql = 'select * from user_info where email = ? and password = ?;'
     var inserts = [args.email, args.password]
     sql = mysql.format(sql, inserts)
-    logger.debug("sql:"+sql)
+    logger.debug("sql:" + sql)
+
     db.get_connection(function (conn) {
         conn.query(sql, function (err, rows) {
             if (err) {
