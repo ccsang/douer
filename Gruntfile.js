@@ -5,7 +5,8 @@ module.exports = function (grunt) {
         stylus: {
             compile: {
                 files: {
-                    'public/stylesheets/style.css': ['public/stylesheets/*.styl']
+                    'public/stylesheets/style.css': 'public/stylesheets/style.styl',
+                    'public/stylesheets/main.css' : ['public/stylesheets/common/*.styl']
                 }
             }
         },
@@ -27,7 +28,7 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: ['public/stylesheets/style.styl', 'routes/*.js', './*.js', 'public/javascripts/*.js', 'model/*.js'],
+                files: ['public/stylesheets/style.styl', 'public/stylesheets/common/*.styl', 'routes/*.js', './*.js', 'public/javascripts/*.js', 'model/*.js'],
                 tasks: ['stylus', 'jshint'] 
             }
         }

@@ -1,0 +1,26 @@
+extends layout
+append content
+    h1.page-header 日志
+    .row.placeholders
+        .col-sm-6.col-md-7
+            .list-toolbar
+                .show-in-owner
+                    button#btn-post-blog.btn.btn-default(type="button")
+                        span.glyphicon.glyphicon-pencil
+                        写日志
+            #page-container-blog
+                ul
+                    li
+                        .blog-item
+                            .blog-head
+                            .blog-body
+                            .blog-foot
+                                .scrap-info
+                                .op-lists
+
+        .col-sm-3.col-md-3
+            ul.nav.nav-pills.nav-stacked
+                li
+                    a(href="#") 日志分类
+                li
+                    a(href="#") 碎碎念

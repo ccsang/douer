@@ -83,6 +83,10 @@ var to_login = function (req, res) {
     res.render('login')
 }
 
+var blog_list = function (req, res) {
+    res.render('blog')
+}
+
 router.get('/register', to_register)
 
 router.get('/signup', sign_up)
@@ -92,5 +96,7 @@ router.post('/signin', sign_in)
 router.get('/logout', log_out)
 
 router.get('/login', to_login)
+
+router.get('/blog', blog_list)
 
 module.exports = router

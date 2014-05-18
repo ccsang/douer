@@ -1,0 +1,22 @@
+extends layout
+append content
+    h3.page-header 写日志
+    .blog-write
+        form#form-blog(action="/post_blog", method="post")
+            .blog-head
+                input.form-control(name="title", placeholder="题目")
+                .dropdown
+                    a#drop-category(role="button", data-toggle="dropdown", href="#")
+                        类型
+                        b.caret
+                    ul.dropdown-menu(role="menu",aria-labelledby="drop-category")
+                        li(role="presentation")
+                            a(role="menuitem", tabindex="-1", href="#") 啊哈
+            .blog-body
+                textarea#blog-editor.widgEditor
+            .blog-footer
+                button#btn-blog-publish.btn.btn-default(type="button") 发布
+                button#btn-blog-cancel.btn.btn-default(type="button") 取消
+append javascript
+    script(src="vendor/widgEditor/scripts/widgEditor.js", type="text/javascript")
+    script(src="javascripts/add_blog.js", type="text/javascript")
