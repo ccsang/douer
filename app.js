@@ -11,6 +11,7 @@ var logger = log4js.logger('app')
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var blog = require('./routes/blog');
+var filter = require('./util/filter');
 
 var app = express();
 
@@ -28,7 +29,7 @@ app.use(cookieParser());
 app.use(connect.session({secret: 'douer'}))
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.get(/^(?!.*login)/, filter.authorize)
 app.use('/', routes);
 app.use('/', users);
 app.use('/', blog);

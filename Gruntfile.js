@@ -22,7 +22,8 @@ module.exports = function (grunt) {
                 node: true,
                 browser: true,
                 jquery: true,
-                devel: true
+                devel: true,
+                multistr: true
             },
             files: ['routes/*.js', './*.js', 'public/javascripts/*.js', 'model/*.js'],
         },

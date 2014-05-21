@@ -1,26 +1,100 @@
 extends layout
 append content
     h1.page-header 日志
-    .row.placeholders
+    .row
         .col-sm-6.col-md-7
-            .list-toolbar
-                .show-in-owner
-                    button#btn-post-blog.btn.btn-default(type="button")
-                        span.glyphicon.glyphicon-pencil
-                        写日志
             #page-container-blog
                 ul
+                    - each blog in blog_list
+                        li
+                            .blog-item
+                                .blog-head
+                                    .blog-post-title
+                                        h2 #{blog.title}
+                                        p
+                                            span.glyphicon.glyphicon-time
+                                            发布于 #{blog.post_time}
+                                .blog-body
+                                    .blog-post-content
+                                        #{blog.content}
+                                .blog-footer
+                                    .scrap-info
+                                        a.btn.btn-primary(href="#") 
+                                            阅读全文
+                                            span.glyphicon.glyphicon-chevron-right    
+                                        a.btn.btn-primary(href="#") 
+                                            评论
+                                            span.glyphicon.glyphicon-comment
+                                    .op-lists
+                                        .show-in-owner
+                                            a.btn.btn-primary(href="/to_update_blog?id=#{blog.id}") 
+                                                编辑
+                                                span.glyphicon.glyphicon-pencil
+                                            a.btn.btn-primary(href="/del_blog?id=#{blog.id}") 
+                                                删除
+                                                span.glyphicon.glyphicon-remove-circle
+                            hr
                     li
                         .blog-item
                             .blog-head
+                                .blog-post-title
+                                    h2 韩寒：原来我不是一棵植物 我是一只动物
+                                    p
+                                        span.glyphicon.glyphicon-time
+                                        发布于 2013年10月21日14时
                             .blog-body
-                            .blog-foot
-                                .scrap-info
-                                .op-lists
+                                .blog-post-content
+                                    p 
+                                        |这么多年来，一直是我脚下的流沙裹着我四处漂泊，它也不淹没我，它只是时不时提醒我，你没有别的选择，否则你就被风吹走了。我就这么浑浑噩噩地度过了我所有热血的岁月，被裹到东，被裹到西，连我曾经所鄙视的种子都不如。
+                                    p
+                                        |一直到一周以前，我对流沙说，让风把我吹走吧。
+                                    p   
+                                        |流沙说，你没了根，马上就死。
+                                    p
+                                        |我说，我存够了水，能活一阵子。
+                                    p
+                                        |流沙说，但是风会把你无休止地留在空中，你就脱水了。
+                                    p
+                                        |我说，我还有雨水。
+                                    p   x`
+                                        |流沙说，雨水要流到大地上，才能够积蓄成水塘，它在空中的时候，只是一个装饰品。
+                                    p
+                                        |我说，我会掉到水塘里的。
+                                    p
+                                        |流沙说，那你就淹死了。
+                                    p
+                                        |我说，让我试试吧。
 
-        .col-sm-3.col-md-3
-            ul.nav.nav-pills.nav-stacked
-                li
-                    a(href="#") 日志分类
-                li
-                    a(href="#") 碎碎念
+                            .blog-footer
+                                .scrap-info
+                                    a(href="#") 阅读全文
+                                    a(href="#") 评论
+                                .op-lists.show-in-owner
+                                    a(href="#") 编辑
+                                    a(href="#") 删除
+
+        .col-sm-3.col-offset-sm-3.col-md-3.col-offset-md-3
+            .well.show-in-owner
+                button#btn-post-blog.btn.btn-default(type="button")
+                    span.glyphicon.glyphicon-pencil
+                    写日志
+            .well
+                h4 搜索文章
+                .input-group
+                    input.form-control(type='text')
+                    span.input-group-btn
+                        button.btn.btn-default(type='button')
+                            span.glyphicon.glyphicon-search
+            .well
+                .show-in-owner
+                    button#btn-category-manage.btn.btn-default(type="button")
+                        span.glyphicon.glyphicon-list-alt
+                            分类管理
+                ul.nav.nav-pills.nav-stacked
+                    li
+                        a(href="#") 个人日记
+                    li
+                        a(href="#") 碎碎念
+
+append javascript
+    script(src="/javascripts/blog.js", type="text/javascript")

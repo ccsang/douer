@@ -54,7 +54,7 @@ var sign_in = function (req, res) {
             return res.render("login", {msg: '用户名/密码错误'})
         }
         
-        req.session.user = rows[0]
+        req.session.current_user = rows[0]
         req.session.user_id = rows[0].id
         
         if (is_remember) {
@@ -62,7 +62,7 @@ var sign_in = function (req, res) {
             res.cookie('email', email, cookie_opt)
             res.cookie('password', password, cookie_opt)
         }
-        return res.render('index')
+        return res.render('index', {user_id : rows[0].id})
     })    
 }
 
@@ -83,9 +83,9 @@ var to_login = function (req, res) {
     res.render('login')
 }
 
-var blog_list = function (req, res) {
-    res.render('blog')
-}
+// var blog_list = function (req, res) {
+//     res.render('blog')
+// }
 
 router.get('/register', to_register)
 
@@ -97,6 +97,6 @@ router.get('/logout', log_out)
 
 router.get('/login', to_login)
 
-router.get('/blog', blog_list)
+// router.get('/blog', blog_list)
 
 module.exports = router
