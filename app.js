@@ -11,6 +11,7 @@ var logger = log4js.logger('app')
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var blog = require('./routes/blog');
+var photo = require('./routes/photo');
 var filter = require('./util/filter');
 
 var app = express();
@@ -33,6 +34,7 @@ app.get(/^(?!.*login)/, filter.authorize)
 app.use('/', routes);
 app.use('/', users);
 app.use('/', blog);
+app.use('/', photo);
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

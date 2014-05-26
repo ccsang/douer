@@ -1,0 +1,24 @@
+extends ../layout
+append content
+    h3.page-header 写日志
+    .blog-write
+        form#form-blog(action="/post_blog", method="post")
+            .blog-head
+                input.form-control(name="title", placeholder="标题",value="")
+                input#blog-category-id.form-control(name="category_id", type="hidden", value="")
+                .dropdown
+                    a#drop-category(role="button", data-toggle="dropdown", href="#")
+                        |类型
+                        b.caret
+                    ul.dropdown-menu.category-list(role="menu",aria-labelledby="drop-category")
+                        -each category in category_list
+                            li(role="presentation")
+                                a(role="menuitem", tabindex="-1", data-category-id="#{category.id}", href="#") #{category.category_name}
+            .blog-body
+                textarea#blog-editor.widgEditor(name="blog_content",value="",rows="40")
+            .blog-footer
+                button#btn-blog-publish.btn.btn-default(type="button") 发布
+                button#btn-blog-cancel.btn.btn-default(type="button") 取消
+append javascript
+    script(src="vendor/widgEditor/scripts/widgEditor.js", type="text/javascript")
+    script(src="javascripts/add_blog.js", type="text/javascript")

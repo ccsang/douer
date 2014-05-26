@@ -1,0 +1,26 @@
+extends ../layout
+append content
+    h2.page-header 日志
+    .blog-app
+        .blog-header
+            .blog-title
+                h2 #{blog_detail.title}
+                p
+                    span.glyphicon.glyphicon-time
+                    发布于 #{blog_detail.post_time}
+            .operate-toolbar.show-in-owner
+                a.btn.btn-primary(href="/to_update_blog?id=#{blog_detail.id}") 
+                    编辑
+                    span.glyphicon.glyphicon-pencil
+                a.btn.btn-primary(href="/del_blog?id=#{blog_detail.id}") 
+                    删除
+                    span.glyphicon.glyphicon-remove-circle
+        .blog-body
+            .blog-content
+                #{blog_detail.content}
+        .blog-footer
+            .operate-toolbar
+                .scrap-info
+                    a.btn.btn-primary(href="#") 
+                        评论
+                        span.glyphicon.glyphicon-comment

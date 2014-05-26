@@ -1,0 +1,51 @@
+extends ../layout
+append content
+    .row
+        .page-header 
+            h2 相册
+            button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload    ") 上传照片
+            button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
+        - each album in album_list
+            .col-sm-2.col-md-3.thumb
+                h4 #{album.album_name}
+                a.thumbnail(href="/album/#{album.id}")
+                    img.img-responsive(src="#{album.cover}")
+    .modal.fade#modal-upload
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                    h4.modal-title 上传照片
+                .modal-body
+                    form#form-upload(role='form', method='post', enctype="multipart/form-data", action='/upload_photo')
+                        .form-group
+                            label(for="select-album") 选择相册
+                            select#select-album.form-control(name="album_id")
+                                - each album in album_list
+                                    option(value='#{album.id}') #{album.album_name}
+                        .form-group
+                            label(for="input-album-name") 描述
+                            input#input-album-name.form-control(type="text", name="comment")
+                        .form-group
+                            label(for="input-file-upload") 上传
+                            input#input-file-upload.form-control(type="file", name="photo")
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') 取消
+                    button#btn-photo-upload-confirm.btn.btn-primary(type='button') 上传
+    .modal.fade#modal-add-album
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                    h4.modal-title 创建相册
+                .modal-body
+                    form#form-add-album(role='form', method='post', action='/add_album')
+                        .form-group
+                            label(for='input-album-name') 相册名称
+                            input#input-album-name.form-control(type='text', name="album_name")
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') 取消
+                    button#btn-add-album-confirm.btn.btn-primary(type='button') 确定
+append javascript
+    script(src="/javascripts/album.js", type="text/javascript")
+

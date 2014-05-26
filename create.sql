@@ -78,6 +78,7 @@ create table if not exists photo (
 create table if not exists album (
     id int primary key not null auto_increment,
     user_id int not null,
+    cover varchar(128) not null,
     album_name varchar(128) not null
 );
 

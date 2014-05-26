@@ -69,6 +69,22 @@ exports.get_list_by_user = function (args, cb) {
     })
 }
 
+exports.get_list_by_category = function (args, cb) {
+    var sql = 'select id, user_id ,category_id, \
+               title, content , post_time , update_time\
+               from blog where category_id = ? '
+    var inserts = [args.category_id]
+    sql = mysql.format(sql, inserts)
+    logger.info('sql :' + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}   
+
 exports.del = function (args, cb) {
     var sql = 'delete from blog where id = ? ;'
     var inserts = [args.id]

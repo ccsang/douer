@@ -1,10 +1,14 @@
 var router = require('express').Router(),
     logger = require('../util/log').logger('routes_blog'),
     model_blog = require('../model/blog'),
+    model_category = require('../model/category'),
     moment = require('moment-timezone')
 
 var to_post_blog = function (req, res) {
-    res.render('add_blog')
+    var user_id = req.session.user_id
+    model_category.list({user_id: user_id}, function (err, rows) {
+        res.render('blog/add_blog', {category_list: rows})
+    })
 }
 
 var post_blog = function (req, res) {
@@ -35,7 +39,7 @@ var post_blog = function (req, res) {
 }
 
 var get_list_by_user = function (req, res) {
-    var user_id = req.params.user_id
+    var user_id = req.session.user_id
     
     logger.info(">>>>>>>>>>>" + user_id)
     if (user_id === undefined) {
@@ -53,7 +57,7 @@ var get_list_by_user = function (req, res) {
             rows[i].post_time = moment.tz(rows[i].post_time, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm')
         }
 
-        res.render('blog', {blog_list : rows})
+        res.render('blog/blog', {blog_list : rows})
     })
 }
 
@@ -73,7 +77,7 @@ var get_blog_detail = function (req, res) {
         
         var post_time = moment.tz(rows[0].post_time, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm')
         rows[0].post_time = post_time
-        return res.render('blog_detail', {blog_detail : rows[0]})
+        return res.render('blog/blog_detail', {blog_detail : rows[0]})
     })
 }
 
@@ -122,7 +126,7 @@ var del_blog = function (req, res) {
             return res.render('error', err)
         }
 
-        return res.redirect('/blog_list/' + req.session.user_id)
+        return res.redirect('/blog_list')
     })
 }
 
@@ -137,7 +141,73 @@ var to_update_blog = function (req, res) {
         if (err) {
             return res.render('error', err)
         }
-        return res.render('update_blog', {blog_detail: rows[0]})
+        return res.render('blog/update_blog', {blog_detail: rows[0]})
+    })
+}
+
+var add_category = function (req, res) {
+    var user_id = req.session.user_id
+    var category_name = req.param('category_name')
+
+    if (user_id === undefined || category_name === undefined) {
+        return res.send({ok: 0})
+    }
+
+    var args = {user_id: user_id, category_name: category_name}
+
+    model_category.insert(args, function (err, rows) {
+        if (err) {
+            logger.error("insert category failed , category_name :" + category_name)
+            return res.send({ok: 0})
+        }
+        return res.send({id: rows.insertId})
+    })
+}
+
+var update_category = function (req, res) {
+    var id = req.body.id
+    var category_name = req.body.category_name
+
+    if (id === undefined || category_name === undefined) {
+        return res.send({ok: 0})
+    }
+    var args = {id: id, category_name: category_name}
+ 
+    model_category.update(args, function (err, rows) {
+        if (err) {
+            return res.send({ok: 0})
+        }
+        return res.send(rows)
+    })
+}
+
+var del_category = function (req, res) {
+    var id = req.body.id
+    if (id === undefined) {
+        return res.send({ok: 0})
+    }
+
+    model_category.del({id: id}, function (err, rows) {
+        if (err) {
+            return res.send({ok: 0})
+        }
+        return res.send(rows)
+    })
+}
+
+var list_category = function (req, res) {
+    var user_id = req.session.user_id
+
+    if (user_id === undefined) {
+        return res.send({ok: 0})
+    }
+
+    model_category.list({user_id: user_id}, function (err, rows) {
+        if (err) {
+            return res.send({ok: 0})
+        }
+
+        return res.send(rows)
     })
 }
 
@@ -147,5 +217,10 @@ router.get('/del_blog', del_blog)
 router.get('/add_blog', to_post_blog)
 router.post('/post_blog', post_blog)
 router.get('/blog/:id', get_blog_detail)
-router.get('/blog_list/:user_id', get_list_by_user)
+router.get('/blog_list', get_list_by_user)
+router.post('/add_category', add_category)
+router.get('/update_category', update_category)
+router.get('/del_category', del_category)
+router.get('/list_category', list_category)
+
 module.exports = router

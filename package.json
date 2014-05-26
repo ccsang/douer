@@ -18,7 +18,8 @@
     "log4js": "~0.6.14",
     "connect": "^2.15.0",
     "moment": "^2.6.0",
-    "moment-timezone": "0.0.6"
+    "moment-timezone": "0.0.6",
+    "formidable": "^1.0.14"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
