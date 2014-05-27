@@ -1,0 +1,22 @@
+extends ../layout
+append content
+    .row
+        .col-sm-8.col-md-9
+            .content-main#timeline(role='main',aria-labelledby='content-main-heading')
+                .content-header
+                    h2 广播
+                    .panel.panel-default
+                        .panel-heading 发广播
+                        .panel-body
+                            form#form-post-broadcast(action='/post_broadcast', method='post')
+                                textarea#form-control(name='content', cols='120',rows='5')
+                                button#btn-post-broadcast.btn.btn-default(type='button') 发布
+                .stream-container
+                    ul.list-group
+                        -each tweet in tweets
+                            li.list-group-item
+                                .tweet
+                                    p #{tweet.poster} #{tweet.post_time}
+                                    p. #{tweet.content}
+append javascript
+    script(src="/javascripts/broadcast.js", type="text/javascript")

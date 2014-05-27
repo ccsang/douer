@@ -83,9 +83,86 @@ var to_login = function (req, res) {
     res.render('login')
 }
 
-// var blog_list = function (req, res) {
-//     res.render('blog')
-// }
+var update_profile = function (req, res) {
+    var user_id = req.session.user_id
+    var email = req.param('email')
+    var nickname = req.param('nickname')
+    var sex = req.param('sex')
+    var birthday = req.param('birthday')
+    var city = req.param('city')
+    var hometown = req.param('hometown')
+    var school = req.param('school')
+
+    if (user_id === undefined || email === undefined ||
+        nickname === undefined || sex === undefined ||
+        sex === undefined || birthday === undefined ||
+        city === undefined || hometown === undefined ||
+        school === undefined) {
+        return req.send({ok: 0})
+    }
+    
+    var args = {
+        id      : user_id,
+        email   : email,
+        nickname: nickname,
+        sex     : sex,
+        birthday: birthday,
+        city    : city,
+        hometown: hometown,
+        school  : school
+    }
+    model_user.update(args, function(err, rows) {
+        
+        if (err) {
+            logger.info('update profile failed, user_id : ' + user_id)
+            return res.send({ok: 0})
+        }
+
+        model_user.get_by_id({id: user_id}, function (err, rows) {
+            if (err) {
+                logger.info('get profile failed, user_id :' + user_id)
+                return res.send({ok: 0})
+            }
+
+            req.session.user = rows[0]
+            return res.send({ok: 1})
+        })
+    })
+
+}
+
+var update_avatar = function (req, res) {
+    var user_id = req.session.user_id,
+        photo = req.param('photo')
+
+    if (user_id === undefined || photo === undefined) {
+        return res.redirect('back')
+    }
+
+    var args = {
+        id: user_id,
+        photo: photo
+    }
+
+    model_user.update_avatar(args, function (err, rows) {
+        if (err, rows) {
+            logger.info('update avatar failed, user_id:' + user_id)
+            return res.send({ok: 0})
+        }
+
+        model_user.get_by_id({id: user_id}, function (err, rows) {
+            if (err) {
+                logger.info('get profile failed, user_id :' + user_id)
+                return res.send({ok: 0})
+            }
+
+            req.session.user = rows[0]
+            return res.redirect('back')
+        })
+
+
+    })
+}
 
 router.get('/register', to_register)
 

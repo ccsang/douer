@@ -38,3 +38,47 @@ exports.login = function (args, cb) {
         })
     })
 }
+
+exports.update = function (args, cb) {
+    var sql = 'update user_info set email = ? , nickname = ?, sex = ? ,birthday = ?\
+        city = ?, hometown = ?, school = ? where id = ?'
+    var inserts = [args.email, args.nickname, args.sex, args.birthday, args.city, 
+        args.hometown, args.school, args.id]
+    sql = mysql.format(sql, inserts)
+    logger.info("sql: " + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}
+
+exports.update_avatar = function (args, cb) {
+    var sql = 'update user_info set photo = ? where id = ?'
+    var inserts = [args.photo, args.id]
+    sql = mysql.format(sql, inserts)
+    logger.info('sql :' + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}
+
+exports.get_by_id = function (args, cb) {
+    var sql = 'select id, email, nickname, sex, birthday, city, hometown, school, photo where id = ?;'
+    var inserts = [aras.id]
+    sql = mysql.format(sql, inserts)
+    logger.info('sql :' + sql)
+
+    db.get_connection(function (args, cb) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}

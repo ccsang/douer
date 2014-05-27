@@ -1,0 +1,30 @@
+extends layout
+append content
+    h1.page-header 个人信息
+    .row
+        .col-sm-6.col-md-7
+            form#form-profile.form-horizontal(role='form',action='/update_profile', method='post')
+                .form-group
+                    label(for="input-email") 邮箱
+                    input.form-control#input-email(name='email',type='email',placeholder='邮箱',value='#{profile.email}')
+                .form-group
+                    label(for='input-nickname') 昵称
+                    input.form-control#input-nickname(name='nickname',type='text',placeholde='昵称',value='#{profile.nickname}')
+                .form-group
+                    label(for='input-sex') 性别
+                    input(type='radio',name='sex',value='1') 男
+                    input(type='radio',name='sex',value='0') 女
+                .form-group
+                    label(for='input-birthday') 生日
+                    input.form-control(type='text',name='birthday',value='#{profile.birthday}')
+                .form-group
+                    label(for='input-city') 所在城市
+                    input#input-city.form-control(type='text',name='city',value='#{profile.city}')
+                .form-group
+                    label(for='input-hometown') 故乡
+                    input#input-hometown.form-control(type='text',name='hometown',value='#{profile.hometown}')
+                .form-group
+                    label(for='input-school') 学校
+                    input#input-school.form-control(type='school', name='school',value='#{profile.school}')
+                button#btn-update-profile-confirm.btn.btn-default 保存
+                button#btn-update-profile-cancel.btn.btn-default 取消

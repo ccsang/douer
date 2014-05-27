@@ -5,6 +5,8 @@ append content
             h2 #{album.album_name}
             button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload") 上传照片
             button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
+            button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-del-album') 删除相册
+            button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-update-album') 编辑相册
         - each photo in photo_list
             .col-sm-2.col-md-3.thumb
                 h4 #{photo.comment}
@@ -45,6 +47,41 @@ append content
                 .modal-footer
                     button.btn.btn-default(type='button', data-dismiss='modal') 取消
                     button#btn-add-album-confirm.btn.btn-primary(type='button') 确定
+    .modal.fade#modal-del-album
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                    h4.modal-title 删除相册
+                .modal-body
+                    form#form-del-album(role='form', method='post', action='/del_album')
+                        input(type='hidden',name='album_id',value='#{album.id}')
+                    h4 确定删除相册 #{album.album_name} ?
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') 取消
+                    button#btn-del-confirm.btn.btn-warning(type='button') 删除
+    .modal.fade#modal-update-album
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                    h4.modal-title 编辑相册
+                .modal-body
+                    form#form-update-album(role='form', method='post', action='/update_album')
+                        .form-group
+                            label(form='input-album-name') 相册名称
+                            input#input-update-album-name.form-control(name='album_name',type='text')
+                        .form-group
+                            label(form='select-album-cover') 相册封面
+                            select#select-album-cover.form-control(name='cover')
+                                - each photo in photo_list
+                                    option(value='#{photo.path}') #{photo.comment}
+                                        a.thumbnail(href="#")
+                                            img.img-responsive(src="#{photo.path}")
+                        input(name='album_id', type='hidden', value="#{album.id}")
+                .modal-footer
+                    button.btn.btn-default(type='button',data-dismiss='modal') 取消
+                    button#btn-update-confirm.btn.btn-default(type='button') 确定
 append javascript
     script(src="/javascripts/album.js", type="text/javascript")
 

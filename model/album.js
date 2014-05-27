@@ -16,7 +16,8 @@ exports.insert = function (args, cb) {
     })
 }
 
-exports.update = function (args, cb) {  
+exports.update = function (args, cb) {
+  
     var sql = 'update album set album_name = ?, cover = ? where id = ?'
     var inserts = [args.album_name, args.cover, args.id]
     sql = mysql.format(sql, inserts)
@@ -31,8 +32,8 @@ exports.update = function (args, cb) {
 }
 
 exports.del = function (args, cb) {
-    var sql = 'delete from album where id = ?;'
-    var inserts = [args.id]
+    var sql = 'delete from album where id = ? and user_id = ?;'
+    var inserts = [args.id, args.user_id]
     sql = mysql.format(sql, inserts)
     logger.info('sql: ' + sql)
 

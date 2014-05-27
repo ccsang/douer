@@ -7,10 +7,6 @@ var router = require('express').Router(),
     util = require('util'),
     crypto = require('crypto')
 
-var to_post_photo = function (req, res) {
-    var user_id = req.session.user_id
-
-}
 
 var list_albums = function (req, res) {
     var user_id = req.session.user_id
@@ -42,11 +38,9 @@ var list_photos = function (req, res) {
     model_album.get_by_id({id: album_id}, function (err, result) {
         if (err) {
             logger.error('get album by id failed , album_id :' + album_id)
-            return res.render('back')
+            return res.redirect('back')
         }
-        for (var i in result[0]) {
-            logger.info(i +" >>> " + result[0][i])
-        }
+
         model_photo.get_list_by_album(args, function (err, rows) {
             if (err) {
                 logger.error('get photos failed. albun_id : ' + album_id)
@@ -72,6 +66,53 @@ var add_album = function (req, res) {
             return res.render('error.jade', err)
         }
         return res.redirect('/album_list')
+    })
+}
+var update_album = function (req, res) {
+    var user_id = req.session.user_id
+    var album_id = req.param('album_id')
+    var album_name = req.param('album_name')
+    var cover = req.param('cover')
+
+    logger.info("album_id >>>>>>>>>" + album_id)
+    if (user_id === undefined || album_name === undefined || 
+        cover === undefined || album_id === undefined) {
+        return res.redirect('back')
+    }
+
+    var args = {user_id: user_id, id: album_id, album_name: album_name, cover: cover}
+    model_album.update(args, function (err, rows) {
+        if (err) {
+            logger.error('update album failed. album_id :' + album_id)
+            return res.render('error.jade', err)
+        }
+
+        return res.redirect('/album_list')
+    })
+}
+var del_album = function (req, res) {
+    var user_id = req.session.user_id
+    var album_id = req.param('album_id')
+
+    if (user_id === undefined || album_id === undefined) {
+        return res.redirect('back')
+    }
+
+    var args = {id: album_id, user_id: user_id}
+    model_album.del(args, function (err, rows) {
+        if (err) {
+            logger.error('del album failed, id :' + album_id)
+            return res.redirect('back')
+        }
+
+        model_photo.del_by_album({album_id: album_id, user_id: user_id}, function (err, rows) {
+            if (err) {
+                logger.error('del album failed, id: ' + album_id)
+                return res.redirect('back')
+            }
+
+            return res.redirect('/album_list')
+        })
     })
 }
 
@@ -132,5 +173,7 @@ router.get('/album_list', list_albums)
 router.post('/upload_photo', upload_photo)
 router.post('/add_album', add_album)
 router.get('/album/:album_id', list_photos)
+router.post('/del_album', del_album)
+router.post('/update_album', update_album)
 module.exports = router
 

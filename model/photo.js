@@ -71,3 +71,17 @@ exports.get_list_by_album = function (args, cb) {
         })
     })
 }
+
+exports.del_by_album = function (args, cb) {
+    var sql = 'delete from photo where album_id = ? and user_id = ?;'
+    var inserts = [args.album_id, args.user_id]
+    sql = mysql.format(sql, inserts)
+    logger.info('sql :' + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}

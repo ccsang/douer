@@ -7,3 +7,7 @@ logs
 
 #Dependecy directory
 node_modules
+
+#upload
+public/images
+public/uploads

@@ -7,5 +7,13 @@ $(document).ready(function () {
         $('#form-add-album').submit()
     })
 
+    $('#btn-del-confirm').bind('click', function () {
+        $('#form-del-album').submit()
+    })
+
+    $('#btn-update-confirm').bind('click', function () {
+        $('#form-update-album').submit()
+    })
+
 
 }) 

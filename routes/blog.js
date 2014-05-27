@@ -41,7 +41,6 @@ var post_blog = function (req, res) {
 var get_list_by_user = function (req, res) {
     var user_id = req.session.user_id
     
-    logger.info(">>>>>>>>>>>" + user_id)
     if (user_id === undefined) {
         return res.redirect('back')
     }
@@ -54,7 +53,7 @@ var get_list_by_user = function (req, res) {
         }
         
         for (var i in rows) {
-            rows[i].post_time = moment.tz(rows[i].post_time, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm')
+            rows[i].post_time = moment(rows[i].post_time).format('YYYY-MM-DD HH:mm')
         }
 
         res.render('blog/blog', {blog_list : rows})
@@ -75,7 +74,7 @@ var get_blog_detail = function (req, res) {
             return res.render('error.jade', err)
         }
         
-        var post_time = moment.tz(rows[0].post_time, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm')
+        var post_time = moment(rows[0].post_time).format('YYYY-MM-DD HH:mm')
         rows[0].post_time = post_time
         return res.render('blog/blog_detail', {blog_detail : rows[0]})
     })
@@ -87,7 +86,6 @@ var update_blog = function (req, res) {
     var title = req.body.title
     var content = req.body.blog_content
 
-    logger.info(">>>>>>>>>>>>>>>" + id + "  " + category_id + " " + title + " " + content)
     if (id === undefined || category_id === undefined ||
         title === undefined || content === undefined) {
         return res.redirect('back')
@@ -114,7 +112,6 @@ var update_blog = function (req, res) {
 
 var del_blog = function (req, res) {
     var id = req.param('id')
-    logger.info("id >>>>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + id)
     if (id === undefined) {
         return res.redirect('back')
     } 
@@ -132,7 +129,6 @@ var del_blog = function (req, res) {
 
 var to_update_blog = function (req, res) {
     var id = req.param('id')
-    logger.info("id >>>> " + id)
     if (id === undefined) {
         return res.redirect('back')
     }
