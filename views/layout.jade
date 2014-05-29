@@ -16,8 +16,22 @@ html
                     include includes/sidebar
                 .col-sm-9.col-sm-offset-3.col-md-10.col-sm-offset-2.main
                     block content
+        .modal.fade#update-avatar-modal(role='dialog', tabindex='-1', aria-hidden='true')
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                        h4.modal-title 更换头像
+                    .modal-body
+                        form#form-avatar(role='form', action='/update_avatar', method='post', enctype='multipart/form-data')
+                            .form-group
+                                input#input-avatar-upload.form-control(type="file", name="photo")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') 关闭
+                        button#btn-avatar-confirm.btn.btn-default(type='button') 保存
         script(src="/vendor/jquery/jquery-2.1.1.min.js", type="text/javascript")
         script(src="/vendor/bootstrap/js/bootstrap.min.js", type="text/javascript")
+        script(src='/javascripts/main.js', type='text/javascript')
         block javascript
 
 

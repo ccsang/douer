@@ -4,6 +4,9 @@ var model_user = require('../model/user')
 var logger = require('../util/log').logger('routes_users')
 var crypto = require('../util/encryption')
 var filter = require('../util/filter')
+var formidable = require('formidable')
+var util = require('util')
+var fs = require('fs')
 
 /* GET users listing. */
 // router.get('/', function (req, res) {
@@ -62,7 +65,7 @@ var sign_in = function (req, res) {
             res.cookie('email', email, cookie_opt)
             res.cookie('password', password, cookie_opt)
         }
-        return res.render('index', {user_id : rows[0].id})
+        return res.render('index', {profile: rows[0]})
     })    
 }
 
@@ -111,7 +114,7 @@ var update_profile = function (req, res) {
         hometown: hometown,
         school  : school
     }
-    model_user.update(args, function(err, rows) {
+    model_user.update(args, function (err, rows) {
         
         if (err) {
             logger.info('update profile failed, user_id : ' + user_id)
@@ -124,8 +127,8 @@ var update_profile = function (req, res) {
                 return res.send({ok: 0})
             }
 
-            req.session.user = rows[0]
-            return res.send({ok: 1})
+            req.session.current_user = rows[0]
+            return res.redirect('/profile')
         })
     })
 
@@ -134,34 +137,75 @@ var update_profile = function (req, res) {
 var update_avatar = function (req, res) {
     var user_id = req.session.user_id,
         photo = req.param('photo')
-
-    if (user_id === undefined || photo === undefined) {
-        return res.redirect('back')
-    }
-
-    var args = {
-        id: user_id,
-        photo: photo
-    }
-
-    model_user.update_avatar(args, function (err, rows) {
-        if (err, rows) {
-            logger.info('update avatar failed, user_id:' + user_id)
-            return res.send({ok: 0})
+    
+    var form = new formidable.IncomingForm()
+    form.uploadDir = './public/uploads/'
+    form.parse(req, function (err, fields, files) {
+        if (err) {
+            logger.error(util.inspect(err))
+            return res.redirect('back')
         }
 
-        model_user.get_by_id({id: user_id}, function (err, rows) {
+        var user_id = req.session.user_id,
+            tmp_path = files.photo.path,
+            photo_name = files.photo.name,
+            suffix = photo_name.substring(photo_name.lastIndexOf('.')),
+            now = new Date(),
+            folder = '/images/avatar/',
+            target_folder = './public' + folder
+
+        if (user_id === undefined) {
+            return res.redirect('back')
+        }
+
+        if (!fs.existsSync(target_folder)) {
+            fs.mkdirSync(target_folder)
+        }
+    
+        var path = folder + user_id + Date.parse(new Date()) + Math.random(1000000) + now.getMilliseconds() + suffix,
+            target_path = './public' + path
+
+        var args = {
+            id: user_id,
+            photo: path
+        }
+
+        fs.rename(tmp_path, target_path, function (err) {
             if (err) {
-                logger.info('get profile failed, user_id :' + user_id)
+                logger.error(util.inspect(err))
+                logger.error("target_path:" + target_path)
                 return res.send({ok: 0})
             }
 
-            req.session.user = rows[0]
-            return res.redirect('back')
+            fs.unlink(tmp_path, function () {
+                if (err) {
+                    logger.error(util.inspect(err))
+                    return res.send({ok: 0})
+                }
+                model_user.update_avatar(args, function (err, rows) {
+                    if (err) {
+                        logger.info('update avatar failed, user_id:' + user_id)
+                        return res.send({ok: 0})
+                    }
+
+                    model_user.get_by_id({id: user_id}, function (err, rows) {
+                        if (err) {
+                            logger.info('get profile failed, user_id :' + user_id)
+                            return res.send({ok: 0})
+                        }
+
+                        req.session.current_user = rows[0]
+                        return res.redirect('back')
+                    })
+
+                })
+            })
         })
-
-
     })
+}
+
+var view_profile = function (req, res) {
+    res.render('profile', {profile: req.session.current_user})
 }
 
 router.get('/register', to_register)
@@ -173,6 +217,12 @@ router.post('/signin', sign_in)
 router.get('/logout', log_out)
 
 router.get('/login', to_login)
+
+router.get('/profile', view_profile)
+
+router.post('/update_profile', update_profile)
+
+router.post('/update_avatar', update_avatar)
 
 // router.get('/blog', blog_list)
 

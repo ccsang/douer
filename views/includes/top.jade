@@ -5,12 +5,14 @@
                 .navbar-collapse.collapse
                     ul.nav.navbar-nav.navbar-right
                         li
-                            
+                            a(href='#', data-toggle='modal', data-target='#update-avatar-modal')
+                                img.img-sm.img-rounded.img-responsive(src='#{session.current_user.photo}')
+                        li
                             a(href="#") 
                                 span.glyphicon.glyphicon-inbox
                                 |私信
                         li
-                            a(href="#") 
+                            a(href="/profile") 
                                 span.glyphicon.glyphicon-wrench
                                 |设置
                     form.navbar-form.navbar-right

@@ -29,6 +29,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(connect.session({secret: 'douer'}))
+app.use(function (req, res, next) {
+    res.locals.session = req.session;
+    next();
+})
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.get(/^(?!.*login)/, filter.authorize)

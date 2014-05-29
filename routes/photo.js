@@ -131,6 +131,8 @@ var upload_photo = function (req, res) {
         logger.info("user_id >>> " + user_id + " comment >>>" + comment + " album_id >>> " + album_id)
 
         var tmp_path = files.photo.path
+        var photo_name = files.photo.name
+        var suffix = photo_name.substring(photo_name.lastIndexOf('.'))
         var now = new Date()
         var folder = '/images/' + now.getFullYear() + now.getMonth() + '/'
         var target_folder = './public' + folder
@@ -139,7 +141,7 @@ var upload_photo = function (req, res) {
             fs.mkdirSync(target_folder)
         } 
         
-        var path = folder + user_id + Date.parse(new Date()) + Math.random(100) + files.photo.name    
+        var path = folder + user_id + Date.parse(new Date()) + Math.random(10000) + now.getMilliseconds() + suffix    
         var target_path = './public' + path
         
         var args = {
