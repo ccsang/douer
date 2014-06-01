@@ -1,11 +1,12 @@
 var mysql = require('mysql')
 var logger = require('../util/log').logger('db_util')
 var pool = mysql.createPool({
-	connectionLimit : 10,
-	host            : '192.168.33.10',
-    database        : 'douer',
-	user            : 'root',
-	password        : 'root'
+	connectionLimit    : 20,
+	host               : '192.168.33.11',
+    database           : 'douer',
+	user               : 'root',
+	password           : 'root',
+    multipleStatements : true
 })
 
 exports.get_connection = function (cb) {

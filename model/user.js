@@ -82,3 +82,18 @@ exports.get_by_id = function (args, cb) {
         })
     })
 }
+
+exports.find_by_nickname = function (args, cb) {
+    var sql = 'select id, email, nickname, sex, photo, city\
+               from user_info where nickname like ? ;'
+    var inserts = ['%' + args.nickname + '%']
+    sql = mysql.format(sql, inserts)
+    logger.info('sql:' + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}

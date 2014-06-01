@@ -13,6 +13,7 @@ var users = require('./routes/users');
 var blog = require('./routes/blog');
 var photo = require('./routes/photo');
 var broadcast = require('./routes/broadcast')
+var friends = require('./routes/friends')
 var filter = require('./util/filter');
 
 var app = express();
@@ -35,12 +36,13 @@ app.use(function (req, res, next) {
 })
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.get(/^(?!.*login)/, filter.authorize)
+app.get(/^(?!.*login|.*register|.*signup)/, filter.authorize)
 app.use('/', routes);
 app.use('/', users);
 app.use('/', blog);
 app.use('/', photo);
 app.use('/', broadcast)
+app.use('/', friends)
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

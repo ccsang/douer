@@ -208,6 +208,29 @@ var view_profile = function (req, res) {
     res.render('profile', {profile: req.session.current_user})
 }
 
+var search_by_nickname = function (req, res) {
+    var user_id = req.session.user_id,
+        nickname = req.param('nickname')
+
+    if (user_id === undefined || nickname === undefined) {
+        return res.redirect('back')
+    }
+
+    var args = {
+        nickname : nickname
+    }
+
+    model_user.find_by_nickname(args, function (err, rows) {
+
+        if (err) {
+            logger.error('find user failed, nickname : ' + nickname)
+            return res.redirect('back')
+        }
+
+        return res.render('search_result', {user_list: rows})
+    })
+}
+
 router.get('/register', to_register)
 
 router.get('/signup', sign_up)
@@ -223,6 +246,8 @@ router.get('/profile', view_profile)
 router.post('/update_profile', update_profile)
 
 router.post('/update_avatar', update_avatar)
+
+router.post('/search', search_by_nickname)
 
 // router.get('/blog', blog_list)
 

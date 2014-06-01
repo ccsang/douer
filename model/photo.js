@@ -11,6 +11,7 @@ exports.insert = function (args, cb) {
     db.get_connection(function (conn) {
         conn.query(sql, function (err, rows) {
             cb(err, rows)
+            conn.release()
         })
     })
 }
@@ -24,6 +25,7 @@ exports.update = function (args, cb) {
     db.get_connection(function (conn) {
         conn.query(sql, function (err, rows) {
             cb(err, rows)
+            conn.release()
         })
     })
 }

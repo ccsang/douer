@@ -1,0 +1,30 @@
+extends layout
+append content
+    //- .alert.alert-success
+    //-     #{info}
+    //- .alert.alert-danger
+    //-     #{error}
+    ul.list-group
+        - each user in user_list
+            li.list-group-item
+                img.img-search-list.img-circle(src="#{user.photo}")
+                strong #{user.nickname}
+                button.btn-req-add.btn.btn-primary.to-right(data-toggle='modal',data-target='#modal-req-add-friends',type='button',data-id='#{user.id}',data-name='#{user.nickname}') 加好友
+append modal
+    .modal#modal-req-add-friends.fade(tabindex='-1', role='dialog', aria-labelledby='#req-modal-label',aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.btn-cancel-add.close(type='button',data-dismiss='modal',aria-hidden='true') &times;
+                    h4.modal-title#req-modal-label 
+                .modal-body
+                    form#form-add-friends(role='form')
+                        .form-group
+                            label 需要通过验证才能加为好友
+                            textarea#textarea-req-content.form-control(rows='3',name='content',placeholder='附加信息')
+                        input#input-req-friend-id(type='hidden',name='id')
+                .modal-footer
+                    button.btn-cancel-add.btn.btn-default(type='button',data-dismiss='modal') 取消
+                    button#btn-add-friends.btn.btn-primary(type='button') 确认
+append javascript
+    script(src='/javascripts/add_friends.js', type='text/javascript')

@@ -7,7 +7,6 @@ log4js.configure({
          filename              : 'logs/douer.log',
          pattern               : '-yyyy-MM-dd',
          alwaysIncludedPattern : false,
-         category              : 'dateFileLog'
         }
     ],
     replaceConsole: true,

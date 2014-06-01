@@ -17,7 +17,8 @@ create table if not exists user_info (
 create table if not exists friends (
     id int primary key not null auto_increment,
     user_id int not null,
-    group_id int not null,
+    friend_id int not null,
+    group_id int,
     comment varchar(128) 
 );
 
@@ -32,6 +33,7 @@ create table if not exists add_friend_msg (
     user_id int not null,
     send_user_id int not null,
     send_time timestamp not null default CURRENT_TIMESTAMP,
+    status int not null default 1,
     content varchar(255)
 );
 

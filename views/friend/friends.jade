@@ -1,0 +1,29 @@
+extends ../layout
+append content
+    .row
+        .page-header
+            h2 好友
+        - each friend in friends_list
+            .col-sm-2.col-md-3.thumb
+                .friends-info.thumbnail
+                    img.img-rounded.img-responsive(src='#{friend.photo}')
+                    .caption
+                        h3 #{friend.nickname}
+                        - if (friend.sex === 0)
+                            span 女
+                        - else if (friend.sex === 1)
+                            span 男
+                        button.btn-unfriend.btn.btn-default.btn-sm(type="button",data-id="#{friend.id}",data-nickname="#{friend.nickname}",data-toggle='modal',data-target='#modal-unfriend') 解除好友
+append modal
+    .modal.fade#modal-unfriend(tabindex='-1',role='dialog',aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button',data-dismiss='modal',aria-hidden='true') &times;
+                    |删除好友
+                .modal-body
+                .modal-footer
+                    button#btn-cancel-unfriend.btn.btn-default(type='button',data-dismiss='modal') 取消
+                    button#btn-confirm-unfriend.btn.btn-danger(type='button') 确认
+append javascript
+    script(src='/javascripts/friends.js', type='text/javascript')
