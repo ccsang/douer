@@ -77,7 +77,7 @@ var log_out = function (req, res) {
         }
         res.clearCookie('email')
         res.clearCookie('password')
-        return res.redirect('login')
+        return res.redirect('/login')
     })
 
 }

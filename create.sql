@@ -87,7 +87,7 @@ create table if not exists album (
 create table if not exists message (
     id int primary key not null auto_increment,
     user_id int not null,
-    send_user_id int not null,
+    poster_id int not null,
     content varchar(128) not null,
     post_time timestamp not null default CURRENT_TIMESTAMP
 );

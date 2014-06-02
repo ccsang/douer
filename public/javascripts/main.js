@@ -37,6 +37,8 @@ $(document).ready(function () {
             id: id,
             status : status
         }
+
+        $(this).unbind()
         $.post('/add_friends', args, function (data) {
             if (data.ok === 0) {
                 alert('服务器错误.')
