@@ -21,5 +21,5 @@ append content
                     form(name='comment_form', method='post', action='#{path_prefix}/reply')
                         input(type='hidden', name='review_id', value='#{photo_detail.id}')
                         input(type='hidden', name='type', value='1')
-                        textarea.form-control(name='content', rows='4', cols='64')
+                        textarea.form-control(name='content', rows='4', cols='64', required)
                         button.btn.btn-default(type='submit') 加上去

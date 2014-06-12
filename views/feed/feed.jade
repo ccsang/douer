@@ -31,7 +31,7 @@ append content
                                     form(method='post', action='#{path_prefix}/reply')
                                         input(type='hidden',name='review_id',value='#{feed.id}')
                                         input(type='hidden',name='type',value='3')
-                                        input.form-control(maxlength='500',type='text', name='content')
+                                        input.form-control(maxlength='500',type='text', name='content', required)
                                         button.btn.btn-xs.btn-primary.pull-right(type='submit') 回复
 append javascript
     script(src="/javascripts/feed.js", type="text/javascript")

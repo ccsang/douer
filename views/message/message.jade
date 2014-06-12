@@ -9,7 +9,7 @@ append content
                         .panel-heading 留言
                         .panel-body
                             form#form-post-message(action='#{path_prefix}/post_message', method='post')
-                                textarea.form-control(name='content', cols='120',rows='5')
+                                textarea.form-control(name='content', cols='120',rows='5', required)
                                 input(type='hidden', name='user_id', value='#{user_profile.id}')
                                 button#btn-post-broadcast.btn.btn-default(type='submit') 加上去
                 .stream-container

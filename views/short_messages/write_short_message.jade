@@ -7,7 +7,7 @@ append content
         .media-body
             form(method='post', action='#{path_prefix}/post_short_messages')
                 input(name='receive_user_id',type='hidden',value='#{receive_user.id}')
-                textarea#textarea_short_messages.form-control(name='content')
+                textarea#textarea_short_messages.form-control(name='content', required)
                 button.btn.btn-default(type='submit') 提交
                 button.btn.btn-default(type='button') 取消
 append javascript
