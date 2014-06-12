@@ -1,9 +1,74 @@
 extends layout
-
 append content
-    .content-feed
-    .content-blog
-    .content-album
-    .content-message
-    .content-broadcast
-    .content-share
+    .row
+        .col-sm-6.col-md-7
+            .main-content
+                #douer-user-profile
+                    .pic
+                        a(href='#')
+                            img.user-avatar.img-rounded.img-reponsive(src='#{user_profile.photo}')
+                    .info
+                        h2 #{user_profile.nickname}
+                            span (#{user_profile.intro})
+                .clear
+                #user-staff
+                    #user-blog
+                        h3 #{user_profile.nickname}的日记
+                        - if(user_blog.length === 0)
+                            p #{user_profile.nickname}还没有写日记
+                        - each blog in user_blog
+                            .panel.panel-default.panel-blog
+                                .panel-heading
+                                    h2.panel-title 
+                                        a(href='#{path_prefix}/blog/#{blog.id}') #{blog.title}
+                                    span.glyphicon.glyphicon-time
+                                    span 发布于 #{blog.post_time}
+                                .panel-body
+                                    |!{blog.content}
+                    #user-photo
+                        h3 #{user_profile.nickname}的相册
+                        - if(user_album.length === 0)
+                            p #{user_profile.nickname}还没有上传照片
+                        - each album in user_album
+                            .col-sm-3.col-md-3
+                                a(href='#{path_prefix}/album/#{album.id}')
+                                    img.img-thumbnail.img-reponsive.img-album-cover(src='#{album.cover}')
+                    .clear
+                    #user-message
+                        h3 #{user_profile.nickname}的留言板
+                        - if(user_message.length === 0)
+                            p 还没有人给#{user_profile.nickname}留言
+                        ul.list-group.media-list
+                            -each message in user_message
+                                li.list-group-item.media
+                                    .tweet
+                                        a.pull-left
+                                            img.img-responsive.img-rounded.img-md.media-object(src="#{message.photo}")
+                                        .media-body
+                                            h4.media-heading #{message.nickname} &nbsp;
+                                                span #{message.post_time}
+                                            p. #{message.content}
+        .col-sm-3.col-offset-sm-3.col-md-3.col-offset-md-3
+            .aside-content
+                .douer-profile
+                    .well
+                        img.img-rounded.img-responsive(src='#{user_profile.photo}')
+                        span #{user_profile.city} &nbsp;
+                        - if (user_profile.sex === 1)
+                            span 男
+                        - else if (user_profile.sex === 0)
+                            span 女                  
+                #user-broadcast
+                    .well
+                        h3 #{user_profile.nickname}说
+                        - if(user_broadcast.length === 0)
+                            p #{user_profile.nickname}还没有说
+                        .list-group
+                            - each broadcast in user_broadcast
+                                .list-group-item
+                                    p #{broadcast.content}
+                                    span.time-sm #{broadcast.post_time}
+
+append javascript
+    script(src='/javascripts/index.js', type='text/javascript')
+

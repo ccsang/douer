@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    $("#btn-blog-publish").one('click', function () {
+    $("#btn-blog-publish").bind('click', function () {
         console.log('form submited')
         $("#form-blog").submit() 
     })
 
-    $("#btn-blog-update").one('click', function () {
+    $("#btn-blog-update").bind('click', function () {
         $("#form-blog").submit()
     })
 

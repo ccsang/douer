@@ -1,0 +1,25 @@
+extends ../layout
+append content
+    h2.page-header #{photo_detail.comment}
+    .photo-app
+        .photo-header
+        .photo-body
+            .photo-content
+                img.img-responsive.img-thumbnail(src='#{photo_detail.path}')
+        .photo-footer
+            #comments
+                - each review in reviews
+                    .comment-item.media
+                        a.pull-left(href='#')
+                            img.img-md.img-rounded.img-responsive.media-object(src='#{review.photo}')
+                        .comment-content.media-body
+                            h4.media-heading #{review.nickname} &nbsp;
+                                span #{review.review_time}
+                            p. #{review.content}
+                #add_comment.comment-form
+                    h4 你的回应
+                    form(name='comment_form', method='post', action='#{path_prefix}/reply')
+                        input(type='hidden', name='review_id', value='#{photo_detail.id}')
+                        input(type='hidden', name='type', value='1')
+                        textarea.form-control(name='content', rows='4', cols='64')
+                        button.btn.btn-default(type='submit') 加上去

@@ -1,7 +1,8 @@
 var router = require('express').Router(),
     logger = require('../util/log').logger('routes_boraocast'),
     model_broadcast = require('../model/broadcast'),
-    moment = require('moment-timezone')
+    moment = require('moment-timezone'),
+    model_feed = require('../model/feed')
 
 var post_broadcast = function (req, res) {
     var user_id = req.session.user_id
@@ -11,18 +12,38 @@ var post_broadcast = function (req, res) {
         return res.redirect('back')
     }
 
-    var args = {
+    var args1 = {
         user_id: user_id,
         content: content
     }
     
-    model_broadcast.insert(args, function (err, rows) {
+    model_broadcast.insert(args1, function (err, rows) {
         if (err) {
             logger.error('insert broadcast failed. user_id:' + user_id)
             return res.render('error.jade', err)
         }
+        var event_msg = {
+            nickname  : req.session.current_user.nickname,
+            photo     : req.session.current_user.photo,
+            action    : '发布了说说 ',
+            url_id    : rows.insertId,
+            content   : content
+        }
 
-        return res.redirect('/broadcast_list')
+        var args2 = {
+            user_id  : req.session.user_id,
+            msg_type : model_feed.msg_type.broadcast,
+            event_msg: JSON.stringify(event_msg)
+        }
+        model_feed.insert(args2, function (error, results) {
+            if (error) {
+                logger.error('generate feed failed , blog_id :' + rows.insertId)
+                return res.redirect('back')
+            }
+
+            return res.redirect('/' + req.session.user_id + '/broadcast_list')
+        })
+
     })
 }
 
@@ -73,7 +94,7 @@ var del_broadcast = function (req, res) {
 }
 
 var list_broadcast = function (req, res) {
-    var user_id = req.session.user_id
+    var user_id = res.locals.user_profile.id
 
     if (user_id === undefined) {
         return res.redirect('back')

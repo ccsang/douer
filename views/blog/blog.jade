@@ -5,22 +5,25 @@ append content
         .col-sm-6.col-md-7
             #page-container-blog
                 ul
+                    - if(blog_list.length === 0 )
+                        li
+                            你还没有写blog。。。
                     - each blog in blog_list
                         li
                             .blog-item
                                 .blog-head
                                     .blog-post-title
                                         h2 
-                                            a(href="/blog/#{blog.id}") #{blog.title}
+                                            a(href="#{path_prefix}/blog/#{blog.id}") #{blog.title}
                                         p
                                             span.glyphicon.glyphicon-time
                                             |发布于 #{blog.post_time}
                                 .blog-body
                                     .blog-post-content 
-                                        #{blog.content}
+                                        !{blog.content}
                                 .blog-footer
                                     .scrap-info
-                                        a.btn.btn-primary(href="#") 
+                                        a.btn.btn-primary(href="#{path_prefix}/blog/#{blog.id}") 
                                             |阅读全文
                                             span.glyphicon.glyphicon-chevron-right    
                                         a.btn.btn-primary(href="#") 
@@ -28,10 +31,10 @@ append content
                                             span.glyphicon.glyphicon-comment
                                     .op-lists
                                         .show-in-owner
-                                            a.btn.btn-primary(href="/to_update_blog?id=#{blog.id}") 
+                                            a.btn.btn-primary(href="#{path_prefix}/to_update_blog?id=#{blog.id}") 
                                                 |编辑
                                                 span.glyphicon.glyphicon-pencil
-                                            a.btn.btn-primary(href="/del_blog?id=#{blog.id}") 
+                                            a.btn.btn-primary(href="#{path_prefix}/del_blog?id=#{blog.id}") 
                                                 |删除
                                                 span.glyphicon.glyphicon-remove-circle
                             hr
@@ -41,22 +44,25 @@ append content
 
 
         .col-sm-3.col-offset-sm-3.col-md-3.col-offset-md-3
-            .well.show-in-owner
-                button#btn-post-blog.btn.btn-default(type="button")
-                    span.glyphicon.glyphicon-pencil
-                    |写日志
+            - if (session.user_id === user_profile.id)
+                .well.show-in-owner
+                    button#btn-post-blog.btn.btn-default(type="button")
+                        span.glyphicon.glyphicon-pencil
+                        |写日志
             .well.widget-search-blog
                 h4 搜索文章
-                .input-group
-                    input.form-control(type='text')
-                    span.input-group-btn
-                        button.btn.btn-default(type='button')
-                            span.glyphicon.glyphicon-search
+                form(action='#{path_prefix}/search_blog',method='post')
+                    .input-group
+                        input.form-control(type='text',name='title')
+                        span.input-group-btn
+                            button.btn.btn-default(type='submit')
+                                span.glyphicon.glyphicon-search
             .well.widget-manage-category
-                .show-in-owner
-                    button#btn-category-manage.btn.btn-default(type="button")
-                        span.glyphicon.glyphicon-list-alt
-                            |分类管理
+                - if (session.user_id === user_profile.id)
+                    .show-in-owner
+                        button#btn-category-manage.btn.btn-default(type="button")
+                            span.glyphicon.glyphicon-list-alt
+                                |分类管理
                 ul#nav-category-list.nav.nav-pills.nav-stacked
                     li
                         a(href="#") 个人日记

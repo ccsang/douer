@@ -48,8 +48,9 @@ exports.delete = function (args, cb) {
 
 
 exports.list = function (args, cb) {
-    var sql = ''
-    var inserts = []
+    var sql = ' select message.id, poster_id , content , post_time,user_info.photo,user_info.nickname \
+                from message  inner join user_info on user_info.id = poster_id where user_id = ?;'
+    var inserts = [args.user_id]
     sql = mysql.format(sql, inserts)
     logger.info('sql: ' + sql)
 

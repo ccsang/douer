@@ -17,6 +17,21 @@ exports.insert = function (args, cb) {
     })
 }
 
+exports.insert_self = function (args, cb) {
+    var sql = 'insert into friends(user_id, friend_id) values(?,?);'
+
+    var inserts = [args.id, args.id]
+    sql = mysql.format(sql, inserts)
+    logger.info('sql: ' + sql)
+
+    db.get_connection(function (conn) {
+        conn.query(sql, function (err, rows) {
+            cb(err, rows)
+            conn.release()
+        })
+    })
+}
+
 exports.update = function (args, cb) {
     var sql = 'update friends set comment = ? where id = ?;'
     var inserts = [args.comment, args.id]

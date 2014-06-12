@@ -45,7 +45,7 @@ exports.delete = function (args, cb) {
 }
 
 exports.list = function (args, cb) {
-    var sql = 'select distinct user_id, content, u.nickname  \
+    var sql = 'select distinct user_id, content, u.nickname, u.photo\
     from add_friend_msg a inner join user_info u on a.user_id = u.id \
     where send_user_id = ? and a.status = 1;'
     var inserts = [args.send_user_id]

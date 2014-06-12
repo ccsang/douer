@@ -1,0 +1,35 @@
+extends ../layout
+append content
+    .row
+        .col-sm-8.col-md-9
+            .content-main#timeline(role='main',aria-labelledby='content-main-heading')
+                .content-header
+                    h2 有什么话要跟 #{user_profile.nickname} 讲
+                    .panel.panel-default
+                        .panel-heading 留言
+                        .panel-body
+                            form#form-post-message(action='#{path_prefix}/post_message', method='post')
+                                textarea.form-control(name='content', cols='120',rows='5')
+                                input(type='hidden', name='user_id', value='#{user_profile.id}')
+                                button#btn-post-broadcast.btn.btn-default(type='submit') 加上去
+                .stream-container
+                    ul.list-group.media-list
+                        -each message in message_list
+                            li.list-group-item.media
+                                .tweet
+                                    a.pull-left
+                                        img.img-responsive.img-rounded.img-md.media-object(src="#{message.photo}")
+                                    .media-body
+                                        h4.media-heading #{message.nickname} &nbsp;
+                                            span #{message.post_time}
+                                        p. #{message.content}
+                                    //-     button.btn-check-review.pull-right.btn.btn-default.btn-xs(type='button',data-id='#{tweet.id}',data-type='2') 查看回复
+                                    //- .replys
+                                        .comments
+                                        form(method='post', action='#{path_prefix}/reply')
+                                            input(type='hidden',name='review_id',value='#{tweet.id}')
+                                            input(type='hidden',name='type',value='2')
+                                            input.form-control(maxlength='500',type='text', name='content')
+                                            button.btn.btn-xs.btn-primary.pull-right(type='submit') 回复
+append javascript
+    script(src="/javascripts/message.js", type="text/javascript")

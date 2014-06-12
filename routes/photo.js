@@ -5,11 +5,12 @@ var router = require('express').Router(),
     fs = require('fs'),
     formidable = require('formidable'),
     util = require('util'),
-    crypto = require('crypto')
+    moment = require('moment'),
+    model_feed = require('../model/feed')
 
 
 var list_albums = function (req, res) {
-    var user_id = req.session.user_id
+    var user_id = res.locals.user_profile.id
     if (user_id === undefined) {
         return res.redirect('back')
     }
@@ -24,7 +25,7 @@ var list_albums = function (req, res) {
 }
 
 var list_photos = function (req, res) {
-    var user_id = req.session.user_id
+    var user_id = res.locals.user_profile.id
     var album_id = req.param('album_id')
     if (user_id === undefined || album_id === undefined) {
         return res.redirect('back')
@@ -65,7 +66,7 @@ var add_album = function (req, res) {
             logger.error('add album failed. user_id : ' + user_id)
             return res.render('error.jade', err)
         }
-        return res.redirect('/album_list')
+        return res.redirect('/' + user_id + '/album_list')
     })
 }
 var update_album = function (req, res) {
@@ -87,7 +88,7 @@ var update_album = function (req, res) {
             return res.render('error.jade', err)
         }
 
-        return res.redirect('/album_list')
+        return res.redirect('/' + user_id + '/album_list')
     })
 }
 var del_album = function (req, res) {
@@ -111,7 +112,7 @@ var del_album = function (req, res) {
                 return res.redirect('back')
             }
 
-            return res.redirect('/album_list')
+            return res.redirect('/' + user_id + '/album_list')
         })
     })
 }
@@ -144,13 +145,13 @@ var upload_photo = function (req, res) {
         var path = folder + user_id + Date.parse(new Date()) + Math.random(10000) + now.getMilliseconds() + suffix    
         var target_path = './public' + path
         
-        var args = {
+        var args1 = {
             user_id  : user_id,
             comment  : comment,
             album_id : album_id,
             path     : path
         }
-        model_photo.insert(args, function (err, rows) {
+        model_photo.insert(args1, function (err, rows) {
             if (err) {
                 logger.error('insert into photo failed, user_id :' + user_id)
                 return res.redirect('back')
@@ -164,10 +165,58 @@ var upload_photo = function (req, res) {
                     if (err) {
                         throw err
                     }
-                    res.redirect('back')
+                    var event_msg = {
+                        nickname  : req.session.current_user.nickname,
+                        photo     : req.session.current_user.photo,
+                        action    : '上传了图片',
+                        url_id    : rows.insertId,
+                        content   : path
+                    }
+
+                    var args2 = {
+                        user_id  : req.session.user_id,
+                        msg_type : model_feed.msg_type.photo,
+                        event_msg: JSON.stringify(event_msg)
+                    }
+                    model_feed.insert(args2, function (error, results) {
+                        if (error) {
+                            logger.error('generate feed failed , photo_id :' + rows.insertId)
+                            return res.redirect('back')
+                        }
+
+                        res.redirect('/' + req.session.user_id + '/photo/' + rows.insertId)
+                    })
                 })
             })
         })
+    })
+}
+
+var get_photo_by_id = function (req, res) {
+    var id = req.param('id')
+
+    if (id === undefined) {
+        return res.redirect('back')
+    }
+
+    var args = {
+        id        : id,
+        review_id : id,
+        type      : 1
+    }
+    model_photo.get_by_id(args, function (err, rows) {
+        if (err) {
+            logger.error('get photo failed, id: ' + id)
+            return res.redirect('back')
+        }
+
+        var length = rows[1].length
+        for (var i = 0 ; i < length ; i++) {
+            rows[1][i].review_time = moment(rows[1][i].review_time).format('YYYY-MM-DD HH:mm')
+            // rows[1][i].review_time = moment(rows[1][i].review_time).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm')
+        }
+
+        return res.render('photo/photo_detail', {photo_detail: rows[0][0], reviews: rows[1]})
     })
 }
 
@@ -175,6 +224,7 @@ router.get('/album_list', list_albums)
 router.post('/upload_photo', upload_photo)
 router.post('/add_album', add_album)
 router.get('/album/:album_id', list_photos)
+router.get('/photo/:id', get_photo_by_id)
 router.post('/del_album', del_album)
 router.post('/update_album', update_album)
 module.exports = router

@@ -4,16 +4,19 @@ append content
         .page-header
             h2 好友
         - each friend in friends_list
-            .col-sm-2.col-md-3.thumb
-                .friends-info.thumbnail
-                    img.img-rounded.img-responsive(src='#{friend.photo}')
-                    .caption
-                        h3 #{friend.nickname}
-                        - if (friend.sex === 0)
-                            span 女
-                        - else if (friend.sex === 1)
-                            span 男
-                        button.btn-unfriend.btn.btn-default.btn-sm(type="button",data-id="#{friend.id}",data-nickname="#{friend.nickname}",data-toggle='modal',data-target='#modal-unfriend') 解除好友
+            - if (friend.id !== session.user_id)
+                .col-sm-2.col-md-3.thumb
+                    .friends-info.thumbnail
+                        img.img-rounded.img-responsive(src='#{friend.photo}')
+                        .caption
+                            h3 #{friend.nickname}
+                            - if (friend.sex === 0)
+                                span 女 &nbsp;
+                            - else if (friend.sex === 1)
+                                span 男 &nbsp;
+                            - if (session.user_id === user_profile.id)
+                                button.btn-unfriend.btn.btn-default.btn-sm(type="button",data-id="#{friend.id}",data-nickname="#{friend.nickname}",data-toggle='modal',data-target='#modal-unfriend') 解除好友
+                            a.btn.btn-default.btn-sm(href='/#{session.user_id}/write_message?receive_user_id=#{friend.id}') 发私信
 append modal
     .modal.fade#modal-unfriend(tabindex='-1',role='dialog',aria-hidden='true')
         .modal-dialog.modal-sm

@@ -1,6 +1,15 @@
-extends layout
+doctype html
+html
+    head
+        title= title
+        meta(http-equiv="Content-type", content="text/html;charset=utf-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        meta(name="author", content="Xixiaohai")
+    body
+        img(src='/images/error.gif')
+        p 服务器开小差了
+        .error #{error}
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+        
+
+

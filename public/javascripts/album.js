@@ -1,9 +1,9 @@
 $(document).ready(function () {
     $('#nav-album').addClass('active')
-    $("#btn-photo-upload-confirm").bind('click', function () {
+    $("#btn-photo-upload-confirm").one('click', function () {
         $('#form-upload').submit()
     })
-    $("#btn-add-album-confirm").bind('click', function () {
+    $("#btn-add-album-confirm").one('click', function () {
         $('#form-add-album').submit()
     })
 

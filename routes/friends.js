@@ -2,11 +2,14 @@ var router = require('express').Router(),
     logger = require('../util/log').logger('routes_friends'),
     model_friends = require('../model/friends'),
     model_group = require('../model/friends_group'),
-    model_add_msg = require('../model/add_friend_msg')
+    model_add_msg = require('../model/add_friend_msg'),
+    model_feed = require('../model/feed')
 
 var add_friends = function (req, res) {
-    var user_id = req.session.user_id
+    var user_id = res.locals.user_profile.id
     var id = req.param('id')
+    var nickname = req.param('nickname')
+    var photo = req.param('photo')
 
     if (user_id === undefined || id === undefined) {
         return res.send({ok: 0})
@@ -33,8 +36,48 @@ var add_friends = function (req, res) {
                 logger.error('update add_friend_msg failed. id:' + args2.id)
                 return res.send({ok: 0})
             }
+            var event_msg1 = {
+                nickname  : req.session.current_user.nickname,
+                photo     : req.session.current_user.photo,
+                action    : '加了好友',
+                url_id    : id,
+                content   : nickname
+            }
 
-            return res.send({ok: 1})
+            var args3 = {
+                user_id  : req.session.user_id,
+                msg_type : model_feed.msg_type.add_friend,
+                event_msg: JSON.stringify(event_msg1)
+            }
+            model_feed.insert(args3, function (error, feed1) {
+                if (error) {
+                    logger.error('generate feed failed , user__id :' + req.session.user_id)
+                    return res.redirect('back')
+                }
+
+                var event_msg2 = {
+                    nickname  : nickname,
+                    photo     : photo,
+                    action    : '加了好友',
+                    url_id    : req.session.user_id,
+                    content   : req.session.current_user.nickname
+                }
+
+                var args4 = {
+                    user_id  : id,
+                    msg_type : model_feed.msg_type.add_friend,
+                    event_msg: JSON.stringify(event_msg2)
+                }
+                model_feed.insert(args4, function (error, feed1) {
+                    if (error) {
+                        logger.error('generate feed failed , user__id :' + res.locals.user_profile.id)
+                        return res.redirect('back')
+                    }
+
+                    return res.send({ok: 1})
+                })
+
+            })
         })
     })
 
@@ -110,8 +153,8 @@ var update_friends = function (req, res) {
 }
 
 var list_friends = function (req, res) {
-    var user_id = req.session.user_id
-
+    // var user_id = req.session.user_id
+    var user_id = res.locals.user_profile.id
     if (user_id === undefined) {
         return res.redirect('back')
     }

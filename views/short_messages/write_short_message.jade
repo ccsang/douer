@@ -1,0 +1,14 @@
+extends ../layout
+append content
+    h1.page-header 给#{receive_user.nickname}写私信
+    .media
+        a.pull-left
+            img.img-responsive.img-rounded.img-md.media-object(src='#{receive_user.photo}')
+        .media-body
+            form(method='post', action='#{path_prefix}/post_short_messages')
+                input(name='receive_user_id',type='hidden',value='#{receive_user.id}')
+                textarea#textarea_short_messages.form-control(name='content')
+                button.btn.btn-default(type='submit') 提交
+                button.btn.btn-default(type='button') 取消
+append javascript
+    script(src='/javascripts/short_message.js', type='text/javascript')    

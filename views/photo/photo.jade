@@ -3,14 +3,15 @@ append content
     .row
         .page-header 
             h2 #{album.album_name}
-            button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload") 上传照片
-            button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
-            button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-del-album') 删除相册
-            button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-update-album') 编辑相册
+            - if (session.user_id === user_profile.id)
+                button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload") 上传照片
+                button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
+                button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-del-album') 删除相册
+                button.btn.btn-default(href='#', data-toggle='modal', data-target='#modal-update-album') 编辑相册
         - each photo in photo_list
             .col-sm-2.col-md-3.thumb
                 h4 #{photo.comment}
-                a.thumbnail(href="#")
+                a.thumbnail(href="#{path_prefix}/photo/#{photo.id}")
                     img.img-responsive(src="#{photo.path}")
     .modal.fade#modal-upload
         .modal-dialog
@@ -19,7 +20,7 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 上传照片
                 .modal-body
-                    form#form-upload(role='form', method='post', enctype="multipart/form-data", action='/upload_photo')
+                    form#form-upload(role='form', method='post', enctype="multipart/form-data", action='#{path_prefix}/upload_photo')
                         .form-group
                             label(for="select-album") 选择相册
                             select#select-album.form-control(name="album_id")
@@ -40,7 +41,7 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 创建相册
                 .modal-body
-                    form#form-add-album(role='form', method='post', action='/add_album')
+                    form#form-add-album(role='form', method='post', action='#{path_prefix}/add_album')
                         .form-group
                             label(for='input-album-name') 相册名称
                             input#input-album-name.form-control(type='text', name="album_name")
@@ -54,7 +55,7 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 删除相册
                 .modal-body
-                    form#form-del-album(role='form', method='post', action='/del_album')
+                    form#form-del-album(role='form', method='post', action='#{path_prefix}/del_album')
                         input(type='hidden',name='album_id',value='#{album.id}')
                     h4 确定删除相册 #{album.album_name} ?
                 .modal-footer
@@ -67,10 +68,10 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 编辑相册
                 .modal-body
-                    form#form-update-album(role='form', method='post', action='/update_album')
+                    form#form-update-album(role='form', method='post', action='#{path_prefix}/update_album')
                         .form-group
                             label(form='input-album-name') 相册名称
-                            input#input-update-album-name.form-control(name='album_name',type='text')
+                            input#input-update-album-name.form-control(name='album_name',type='text',value='#{album.album_name}')
                         .form-group
                             label(form='select-album-cover') 相册封面
                             select#select-album-cover.form-control(name='cover')

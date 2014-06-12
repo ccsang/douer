@@ -1,0 +1,13 @@
+extends ../layout
+append content
+    h1.page-header 我的私信
+    ul.list-group.media-list
+        - each conversation in conversations
+            li.list-group-item.media
+                .tweet
+                    a.pull-left
+                        img.img-responsive.img-rounded.img-md.media-object(src="#{conversation.photo}")
+                    .media-body
+                        h4.media-heading #{conversation.nickname} &nbsp;
+                            //- span #{message.post_time}
+                        //- p. #{conversation.content}

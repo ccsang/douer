@@ -13,4 +13,5 @@ drop table if exists share;
 drop table if exists short_messages;
 drop table if exists user_info;
 drop table if exists visit_record;
+drop table if exists feed;
  

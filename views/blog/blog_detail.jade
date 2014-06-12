@@ -7,20 +7,38 @@ append content
                 h2 #{blog_detail.title}
                 p
                     span.glyphicon.glyphicon-time
-                    发布于 #{blog_detail.post_time}
+                    |发布于 #{blog_detail.post_time}
             .operate-toolbar.show-in-owner
-                a.btn.btn-primary(href="/to_update_blog?id=#{blog_detail.id}") 
-                    编辑
+                a.btn.btn-primary(href="#{path_prefix}/to_update_blog?id=#{blog_detail.id}") 
+                    |编辑
                     span.glyphicon.glyphicon-pencil
-                a.btn.btn-primary(href="/del_blog?id=#{blog_detail.id}") 
-                    删除
+                a.btn.btn-primary(href="#{path_preifix}/del_blog?id=#{blog_detail.id}") 
+                    |删除
                     span.glyphicon.glyphicon-remove-circle
         .blog-body
-            .blog-content
-                #{blog_detail.content}
+            .blog-content.
+                !{blog_detail.content}
         .blog-footer
-            .operate-toolbar
+            #comments
+                span.label.label-primary 评论
+                - each review in reviews
+                    .comment-item.media
+                        a.pull-left(href='#')
+                            img.img-md.img-rounded.img-responsive.media-object(src='#{review.photo}')
+                        .comment-content.media-body
+                            h4.media-heading #{review.nickname} &nbsp;
+                                span #{review.review_time}
+                            p. #{review.content}
+                #add_comment.comment-form
+                    h4 你的回应
+                    form(name='comment_form', method='post', action='#{path_prefix}/reply')
+                        input(type='hidden', name='review_id', value='#{blog_detail.id}')
+                        input(type='hidden', name='type', value='0')
+                        textarea.form-control(name='content', rows='4', cols='64')
+                        button.btn.btn-default(type='submit') 加上去
+            //- .operate-toolbar
                 .scrap-info
                     a.btn.btn-primary(href="#") 
-                        评论
+                        |评论
                         span.glyphicon.glyphicon-comment
+

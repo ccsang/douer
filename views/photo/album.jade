@@ -3,12 +3,13 @@ append content
     .row
         .page-header 
             h2 相册
-            button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload") 上传照片
-            button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
+            - if (session.user_id === user_profile.id)
+                button.btn.btn-default(href="#", data-toggle='modal', data-target="#modal-upload") 上传照片
+                button.btn.btn-default(href="#", data-toggle='modal', data-target='#modal-add-album') 创建相册
         - each album in album_list
             .col-sm-2.col-md-3.thumb
                 h4 #{album.album_name}
-                a.thumbnail(href="/album/#{album.id}")
+                a.thumbnail(href="#{path_prefix}/album/#{album.id}")
                     img.img-responsive(src="#{album.cover}")
     .modal.fade#modal-upload
         .modal-dialog
@@ -17,7 +18,7 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 上传照片
                 .modal-body
-                    form#form-upload(role='form', method='post', enctype="multipart/form-data", action='/upload_photo')
+                    form#form-upload(role='form', method='post', enctype="multipart/form-data", action='#{path_prefix}/upload_photo')
                         .form-group
                             label(for="select-album") 选择相册
                             select#select-album.form-control(name="album_id")
@@ -39,7 +40,7 @@ append content
                     button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                     h4.modal-title 创建相册
                 .modal-body
-                    form#form-add-album(role='form', method='post', action='/add_album')
+                    form#form-add-album(role='form', method='post', action='#{path_prefix}/add_album')
                         .form-group
                             label(for='input-album-name') 相册名称
                             input#input-album-name.form-control(type='text', name="album_name")

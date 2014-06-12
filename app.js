@@ -7,13 +7,17 @@ var bodyParser = require('body-parser');
 var connect = require('connect')
 
 var log4js = require('./util/log');
-var logger = log4js.logger('app')
+var logger = log4js.logger('app');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var blog = require('./routes/blog');
 var photo = require('./routes/photo');
-var broadcast = require('./routes/broadcast')
-var friends = require('./routes/friends')
+var broadcast = require('./routes/broadcast');
+var friends = require('./routes/friends');
+var feed = require('./routes/feed');
+var review = require('./routes/review')
+var message = require('./routes/message');
+var short_messages = require('./routes/short_messages')
 var filter = require('./util/filter');
 
 var app = express();
@@ -33,16 +37,28 @@ app.use(connect.session({secret: 'douer'}))
 app.use(function (req, res, next) {
     res.locals.session = req.session;
     next();
-})
+});
+// app.use(function(req, res, next) {
+//     res.on('header', function () {
+//         logger.info('Headers going to  be written.');
+//     });
+//     next()
+// });
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.get(/^(?!.*login|.*register|.*signup)/, filter.authorize)
-app.use('/', routes);
+// app.get(/^(?!.*logout|.*register)/, filter.check_cookie);
+app.get(/^(?!.*login|.*register|.*signup)/, filter.authorize);
+app.use('/:id/*', filter.get_user_profile);
+// app.use('/', routes);
 app.use('/', users);
-app.use('/', blog);
-app.use('/', photo);
-app.use('/', broadcast)
-app.use('/', friends)
+app.use('/:id', blog);
+app.use('/:id', photo);
+app.use('/:id', broadcast);
+app.use('/:id', friends);
+app.use('/:id', feed);
+app.use('/:id', review);
+app.use('/:id', message);
+app.use('/:id', short_messages)
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

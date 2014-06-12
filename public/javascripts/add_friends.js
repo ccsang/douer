@@ -1,14 +1,16 @@
 $(document).ready(function () {
     
+    var url_prefix = "/" + $('#notice-list').data('id')
     var modal_content = ''
     $('#btn-add-friends').one('click', function () {
         // $('#form-add-friends').submit()
         // $(this).hide()
         var id = $('#input-req-friend-id').val()
-        var content = $('#textarea-req-content').text()
+        var content = $('#textarea-req-content').val()
+        console.log("坑爹轰！" + content)
         modal_content = $('#modal-req-add-friends .modal-body').html()
         console.log("modal_content -> " + modal_content)
-        $.post('/req_to_add_friends', {id: id, content: content}, function (data) {
+        $.post(url_prefix + '/req_to_add_friends', {id: id, content: content}, function (data) {
             if (data.ok === 1) {
                 $('#form-add-friends').replaceWith('<div class="alert alert-info">请求成功，等待对方确认。</div>')
             }

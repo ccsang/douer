@@ -1,13 +1,17 @@
 ul.nav.nav-sidebar
-    li#nav-feed
-        a(href="/feed") 新鲜事
+    - var target_path = '/' + user_profile.id
+    li#nav-index
+        a(href='#{target_path}') 主页
+    - if (session.user_id === user_profile.id)
+        li#nav-feed
+            a(href="#{target_path}/feed") 新鲜事
     li#nav-broadcast
-        a(href="/broadcast_list") 广播
+        a(href="#{target_path}/broadcast_list") 广播
     li#nav-blog 
-        a(href="/blog_list") 日志
+        a(href="#{target_path}/blog_list") 日志
     li#nav-album
-        a(href="/album_list") 相册
+        a(href="#{target_path}/album_list") 相册
     li#nav-message
-        a(href="/message_list") 留言板
+        a(href="#{target_path}/message_list") 留言板
     li#nav-friend
-        a(href="/friends_list") 好友
+        a(href="#{target_path}/friends_list") 好友

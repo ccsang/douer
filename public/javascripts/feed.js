@@ -1,8 +1,5 @@
 $(document).ready(function () {
-    $('#nav-broadcast').addClass('active')
-    $('#btn-post-broadcast').bind('click', function () {
-        $('#form-post-broadcast').submit()
-    })
+    $('#nav-feed').addClass('active')
     var path_prefix = '/' + $('#notice-list').data('id')
     $('.btn-check-review').bind('click', function () {
         var self = $(this)
@@ -29,6 +26,4 @@ $(document).ready(function () {
         }
        
     })
-
-
-}) 
+})

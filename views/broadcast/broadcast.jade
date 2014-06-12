@@ -5,18 +5,31 @@ append content
             .content-main#timeline(role='main',aria-labelledby='content-main-heading')
                 .content-header
                     h2 广播
-                    .panel.panel-default
-                        .panel-heading 发广播
-                        .panel-body
-                            form#form-post-broadcast(action='/post_broadcast', method='post')
-                                textarea#form-control(name='content', cols='120',rows='5')
-                                button#btn-post-broadcast.btn.btn-default(type='button') 发布
+                    - if (session.user_id === user_profile.id)
+                        .panel.panel-default
+                            .panel-heading 发广播
+                            .panel-body
+                                form#form-post-broadcast(action='#{path_prefix}/post_broadcast', method='post')
+                                    textarea.form-control(name='content', cols='120',rows='5')
+                                    button#btn-post-broadcast.btn.btn-default(type='button') 发布
                 .stream-container
-                    ul.list-group
+                    ul.list-group.media-list
                         -each tweet in tweets
-                            li.list-group-item
+                            li.list-group-item.media
                                 .tweet
-                                    p #{tweet.poster} #{tweet.post_time}
-                                    p. #{tweet.content}
+                                    a.pull-left
+                                        img.img-responsive.img-rounded.img-md.media-object(src="#{tweet.photo}")
+                                    .media-body
+                                        h4.media-heading #{tweet.nickname} &nbsp;
+                                            span #{tweet.post_time}
+                                        p. #{tweet.content}
+                                        button.btn-check-review.pull-right.btn.btn-default.btn-xs(type='button',data-id='#{tweet.id}',data-type='2') 查看回复
+                                    .replys
+                                        .comments
+                                        form(method='post', action='#{path_prefix}/reply')
+                                            input(type='hidden',name='review_id',value='#{tweet.id}')
+                                            input(type='hidden',name='type',value='2')
+                                            input.form-control(maxlength='500',type='text', name='content')
+                                            button.btn.btn-xs.btn-primary.pull-right(type='submit') 回复
 append javascript
     script(src="/javascripts/broadcast.js", type="text/javascript")

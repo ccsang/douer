@@ -1,0 +1,17 @@
+extends ../layout
+append content
+    h1.page-header 我的私信
+    ul.list-group.media-list
+        - each msg in short_messages_list
+            li.list-group-item.media
+                .tweet
+                    a.pull-left
+                        img.img-responsive.img-rounded.img-md.media-object(src="#{msg.photo}")
+                    .media-body
+                        h4.media-heading #{msg.nickname} &nbsp;
+                            span #{msg.send_time}
+                        .media-content
+                            |!{msg.content}
+                        a.btn.btn-default.btn-sm.pull-right(href='#{path_prefix}/write_message?receive_user_id=#{msg.user_id}') 回复    
+page-header 我的私信
+        

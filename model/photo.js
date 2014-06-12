@@ -31,8 +31,12 @@ exports.update = function (args, cb) {
 }
 
 exports.get_by_id = function (args, cb) {
-    var sql = 'select id, user_id, album_id , path , comment where id = ?'
-    var inserts = [args.id]
+    var sql = 'select id, user_id, album_id , path , comment from photo where id = ?;\
+               select review.id, type, review_id, user_id, content ,review_time, \
+               user_info.nickname,user_info.photo from review \
+               inner join user_info on review.user_id = user_info.id where review_id = ? and type = ? \
+               order by review_time desc;'
+    var inserts = [args.id, args.review_id, args.type]
     sql = mysql.format(sql, inserts)
     logger.info('sql :' + sql)
 

@@ -45,6 +45,10 @@ append content
                         label.control-label.col-sm-2.col-md-3(for='input-school') 学校
                         .col-sm-4.col-md-4
                             input#input-school.form-control(type='school', name='school',value='#{profile.school}')
+                    .form-group
+                        label.control-label.col-sm-2.col-md-3(for='input-intro') 一句话介绍自己
+                        .col-sm-4.col-md-4
+                            input#input-school.form-control(type='intro', name='intro',value='#{profile.intro}')
                     //- .col-sm-offset-2.col-md-offset-3
                         button#btn-update-profile-confirm.btn.btn-default(type='button') 保存
                         button#btn-update-profile-cancel.btn.btn-default(type='button') 取消

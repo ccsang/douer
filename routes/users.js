@@ -7,6 +7,9 @@ var filter = require('../util/filter')
 var formidable = require('formidable')
 var util = require('util')
 var fs = require('fs')
+var snippet = require('../util/snippet')
+var moment = require('moment')
+var model_friends = require('../model/friends')
 
 /* GET users listing. */
 // router.get('/', function (req, res) {
@@ -29,11 +32,21 @@ var sign_up = function (req, res) {
 
     password = crypto.encrypt(password)
 
-    var args = {'email': email, 'password': password, 'nickname': nickname}
-
-    model_user.insert(args, function (rows) {
-        logger.info("insert success!")
-        return res.render("login")
+    var args1 = {'email': email, 'password': password, 'nickname': nickname}
+    
+    model_user.insert(args1, function (err1, rows) {
+        logger.info(util.inspect(err1))
+        if (err1) {
+            logger.error("注册失败 : " + args1.email)
+            return res.render('login', {info: '服务器错误'})
+        }
+        model_friends.insert_self({id: rows.insertId}, function (err2, results) {
+            if (err2) {
+                logger.error('insert self failed. user_id: ' + rows.insertId)
+                return res.render('login', {info: '服务器错误'})
+            }
+            return res.render("login", {info: '注册成功'})
+        }) 
     })    
 }
 
@@ -52,9 +65,12 @@ var sign_in = function (req, res) {
     password = crypto.encrypt(password)
     var args = {'email': email, 'password': password}
 
-    model_user.login(args, function (rows) {
+    model_user.login(args, function (err, rows) {
+        if (err) {
+            return res.render("login", {info: '服务器错误'})
+        }
         if (rows[0] === undefined) {
-            return res.render("login", {msg: '用户名/密码错误'})
+            return res.render("login", {info: '用户名/密码错误'})
         }
         
         req.session.current_user = rows[0]
@@ -65,7 +81,8 @@ var sign_in = function (req, res) {
             res.cookie('email', email, cookie_opt)
             res.cookie('password', password, cookie_opt)
         }
-        return res.render('index', {profile: rows[0]})
+        // return res.render('index', {profile: rows[0]})
+        return res.redirect('/' + req.session.user_id)
     })    
 }
 
@@ -95,12 +112,13 @@ var update_profile = function (req, res) {
     var city = req.param('city')
     var hometown = req.param('hometown')
     var school = req.param('school')
+    var intro = req.param('intro')
 
     if (user_id === undefined || email === undefined ||
         nickname === undefined || sex === undefined ||
         sex === undefined || birthday === undefined ||
         city === undefined || hometown === undefined ||
-        school === undefined) {
+        school === undefined || intro === undefined) {
         return req.send({ok: 0})
     }
     
@@ -112,7 +130,8 @@ var update_profile = function (req, res) {
         birthday: birthday,
         city    : city,
         hometown: hometown,
-        school  : school
+        school  : school,
+        intro   : intro
     }
     model_user.update(args, function (err, rows) {
         
@@ -128,7 +147,7 @@ var update_profile = function (req, res) {
             }
 
             req.session.current_user = rows[0]
-            return res.redirect('/profile')
+            return res.redirect('/' + user_id + '/profile')
         })
     })
 
@@ -231,9 +250,79 @@ var search_by_nickname = function (req, res) {
     })
 }
 
+var get_user_intro = function (req, res) {
+    var user_id = req.param('id')
+
+    if (user_id === undefined) {
+        return res.redirect('back')
+    }
+
+    model_user.get_user_intro({user_id: user_id}, function (err, results) {
+        if (err) {
+            logger.error('get user intro failed, user_id: ' + user_id)
+            return res.redirect('back')
+        }
+
+        var blos_list_length = results[1].length
+        for (var i = 0 ; i < blos_list_length ; i++) {
+            results[1][i].content = snippet.snip(results[1][i].content, 60) + '...'
+            results[1][i].post_time = moment(results[1][i].post_time).format('YYYY-MM-DD HH:mm')
+            
+            
+        }
+
+        var broad_list_length = results[3].length
+        for (var j = 0 ; j < broad_list_length; j++) {
+            results[3][j].post_time = moment(results[3][j].post_time).format('YYYY-MM-DD HH:mm')
+        }
+        
+        var message_list_length = results[3].length
+        for (var k = 0 ; k < message_list_length; k++) {
+            results[4][k].post_time = moment(results[4][k].post_time).format('YYYY-MM-DD HH:mm')
+        }
+
+        var result = {
+            'user_profile'  : results[0][0],
+            'user_blog'     : results[1],
+            'user_album'    : results[2],
+            'user_broadcast': results[3],
+            'user_message'  : results[4]
+        }
+
+        return res.render('index', result)
+    })
+
+}
+
+var index = function (req, res) {
+    if (req.session.user_id === undefined) {
+        return res.redirect('/login')
+    }
+
+    return res.redirect('/' + req.session.user_id)
+}
+
+var check_nickname = function (req, res) {
+    var nickname = req.param('nickname')
+
+    model_user.check_nickname({nickname: nickname}, function (err, rows) {
+        if (err) {
+            logger.error('check nickname failed, nickname: ' + nickname)
+            return res.send({ok: 0})
+        }
+
+        if (rows[0] === undefined) {
+            return res.send({ok: 1})    
+        }
+        else {
+            return res.send({ok: 0})
+        }
+    })
+}
+
 router.get('/register', to_register)
 
-router.get('/signup', sign_up)
+router.post('/signup', sign_up)
 
 router.post('/signin', sign_in)
 
@@ -241,14 +330,18 @@ router.get('/logout', log_out)
 
 router.get('/login', to_login)
 
-router.get('/profile', view_profile)
+router.get('/:id/profile', view_profile)
 
 router.post('/update_profile', update_profile)
 
 router.post('/update_avatar', update_avatar)
 
-router.post('/search', search_by_nickname)
+router.post('/:id/search', search_by_nickname)
 
+router.get('/:id', get_user_intro)
 // router.get('/blog', blog_list)
+router.get('/', index)
+
+router.post('/check_nickname', check_nickname)
 
 module.exports = router
