@@ -76,6 +76,7 @@ var get_list_by_user = function (req, res) {
         
         for (var i in rows) {
             rows[i].post_time = moment(rows[i].post_time).format('YYYY-MM-DD HH:mm')
+            rows[i].content = snippet.snip(rows[i].content, 200) + '...'
         }
 
         res.render('blog/blog', {blog_list : rows})
@@ -106,7 +107,6 @@ var get_blog_detail = function (req, res) {
         var length = rows[1].length
         for (var i = 0 ; i < length ; i++) {
             rows[1][i].review_time = moment(rows[1][i].review_time).format('YYYY-MM-DD HH:mm')
-            rows[1][i].content = snippet.snip(rows[1][i].content, 200) + '...'
         }
         return res.render('blog/blog_detail', {blog_detail : rows[0][0], reviews: rows[1]})
     })
@@ -278,6 +278,7 @@ var get_blog_by_title = function (req, res) {
 
         for (var i in rows) {
             rows[i].post_time = moment(rows[i].post_time).format('YYYY-MM-DD HH:mm')
+            rows[i].content = snippet.snip(rows[i].content, 200) + '...'
         }
 
         return res.render('blog/blog', {blog_list: rows})
